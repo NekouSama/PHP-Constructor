@@ -3,6 +3,10 @@ var path = require("path");
 
 class PropertyInserter {
     async insert() {
+        if (this.activeDocument().languageId !== 'php') {
+            return;
+        }
+        
         let activeDocument = this.activeDocument().uri;
 
         if (activeDocument === undefined) {
@@ -337,7 +341,7 @@ class PropertyInserter {
     async insertClass() {
         let snippet = '<?php\n\n';
 
-        snippet += 'namespace ${1:namespace};\n\n'
+        snippet += 'namespace ${1:namespace}\\' + this.getCurrentDirName() + ';\n\n'
 
         snippet += 'class ' + this.getCurrentFileNameWithoutExtensionForPHP() + '${2:}\n'
             + '{\n'
@@ -350,9 +354,15 @@ class PropertyInserter {
     }
 
     getCurrentFileNameWithoutExtensionForPHP() {
-        var currentlyOpenTabfilePath = vscode.window.activeTextEditor.document.fileName;
-        var currentlyOpenTabfileName = path.basename(currentlyOpenTabfilePath);
-        return currentlyOpenTabfileName.slice(0 , -4);
+        const currentlyOpenTabFilePath = this.activeDocument().fileName;
+        const currentlyOpenTabFileName = path.basename(currentlyOpenTabFilePath);
+        return currentlyOpenTabFileName.slice(0 , -4);
+    }
+
+    getCurrentDirName() {
+        const currentlyOpenTabFilePath = this.activeDocument().fileName;
+        const dirname = path.dirname(currentlyOpenTabFilePath);
+        return dirname.split('\\').pop();
     }
 }
 
