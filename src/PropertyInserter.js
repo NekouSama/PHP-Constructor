@@ -11,6 +11,7 @@ class PropertyInserter {
         let declarations = await this.getDeclarations(activeDocument);
 
         if (declarations.classLineNumber === null) {
+            this.insertClass(declarations);
             return;
         }
 
@@ -88,9 +89,9 @@ class PropertyInserter {
         snippet = this.getIndentation();
 
         if (this.config('choosePropertyVisibility', false)) {
-            snippet += '${3|' + this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
+            snippet += '${3|' + this.getVisibilityChoice(this.config('visibility', 'private'))+'|}';
         } else {
-            snippet += this.config('visibility', 'protected');
+            snippet += this.config('visibility', 'private');
         }
 
         snippet += ' \\$${2:property};\n\n' + this.getIndentation();
@@ -133,9 +134,9 @@ class PropertyInserter {
         let snippet = this.getIndentation();
 
         if (this.config('choosePropertyVisibility', false)) {
-            snippet += '${3|'+this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
+            snippet += '${3|'+this.getVisibilityChoice(this.config('visibility', 'private'))+'|}';
         } else {
-            snippet += this.config('visibility', 'protected');
+            snippet += this.config('visibility', 'private');
         }
 
         snippet += ' \\$${2:property};\n\n';
@@ -223,7 +224,8 @@ class PropertyInserter {
     }
 
     getInsertLine(declarations) {
-        let lineNumber = declarations.lastPropertyLineNumber || declarations.traitUseLineNumber || declarations.classLineNumber;
+        let lineNumber = declarations.lastPropertyLineNumber || declarations.traitUseLineNumber || declarations.classLineNumber || 0;
+        console.log(lineNumber);
 
         return ++lineNumber;
     }
@@ -330,6 +332,23 @@ class PropertyInserter {
         }
 
         return config;
+    }
+
+    insertClass(declarations) {
+        
+
+        let snippet = '<?php\n\n';
+
+        snippet += 'namespace ${1:namespace};\n\n'
+
+        snippet += 'class ${2:name}\n'
+            + '{\n'
+            + this.getIndentation(2) + '${3:innerClass}\n'
+            + '}';
+
+        this.activeEditor().insertSnippet(
+            new vscode.SnippetString(snippet)
+        );
     }
 }
 
