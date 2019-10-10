@@ -88,22 +88,22 @@ class PropertyInserter {
         snippet = this.getIndentation();
 
         if (this.config('choosePropertyVisibility', false)) {
-            snippet += '${2|' + this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
+            snippet += '${3|' + this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
         } else {
             snippet += this.config('visibility', 'protected');
         }
 
-        snippet += ' \\$${1:property};\n\n' + this.getIndentation();
+        snippet += ' \\$${2:property};\n\n' + this.getIndentation();
 
         if (this.config('chooseConstructorVisibility', false)) {
-            snippet += '${3|' + this.getVisibilityChoice(this.config('constructorVisibility', 'public'))+'|}';
+            snippet += '${4|' + this.getVisibilityChoice(this.config('constructorVisibility', 'public'))+'|}';
         } else {
             snippet += this.config('constructorVisibility', 'public');
         }
 
-        snippet += ' function __construct(\\$${1:property})\n' +
+        snippet += ' function __construct(${1:type} \\$${2:property})\n' +
             this.getIndentation() + '{\n' +
-            this.getIndentation(2) + '\\$this->${1:property} = \\$${1:property};$0\n' +
+            this.getIndentation(2) + '\\$this->${2:property} = \\$${2:property};$0\n' +
             this.getIndentation() + '}';
 
         let nextLineOfInsertLine = this.activeEditor().document.lineAt(insertLine.lineNumber + 1);
@@ -133,12 +133,12 @@ class PropertyInserter {
         let snippet = this.getIndentation();
 
         if (this.config('choosePropertyVisibility', false)) {
-            snippet += '${2|'+this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
+            snippet += '${3|'+this.getVisibilityChoice(this.config('visibility', 'protected'))+'|}';
         } else {
             snippet += this.config('visibility', 'protected');
         }
 
-        snippet += ' \\$${1:property};\n\n';
+        snippet += ' \\$${2:property};\n\n';
 
         let constructorStartLineNumber = declarations.constructorRange.start.line;
         let constructorLineText = this.activeEditor().document.getText(declarations.constructorRange);
@@ -166,7 +166,7 @@ class PropertyInserter {
             snippet += `${previousArgs}\, `;
         }
 
-        snippet += '\\$\${1:property})';
+        snippet += '${1:type} \\$\${2:property})';
 
         let constructorClosingLine;
 
@@ -183,7 +183,7 @@ class PropertyInserter {
         // Slice constructor closing brace.
         snippet = snippet.slice(0, -1);
 
-        snippet += this.getIndentation() + '\\$this->${1:property} = \\$${1:property};$0';
+        snippet += this.getIndentation() + '\\$this->${2:property} = \\$${2:property};$0';
         snippet += '\n' + this.getIndentation() +'}';
 
         let nextLineOfConstructorClosing = this.activeEditor().document.lineAt(constructorClosingLine.lineNumber + 1).text;
