@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+var path = require("path");
 
 class PropertyInserter {
     async insert() {
@@ -333,19 +334,25 @@ class PropertyInserter {
         return config;
     }
 
-    insertClass() {     
+    async insertClass() {
         let snippet = '<?php\n\n';
 
         snippet += 'namespace ${1:namespace};\n\n'
 
-        snippet += 'class ${2:name}\n'
+        snippet += 'class ' + this.getCurrentFileNameWithoutExtensionForPHP() + '${2:}\n'
             + '{\n'
-            + this.getIndentation(2) + '${3:innerClass}\n'
+            + this.getIndentation(2) + '${3:}\n'
             + '}';
 
         this.activeEditor().insertSnippet(
             new vscode.SnippetString(snippet)
         );
+    }
+
+    getCurrentFileNameWithoutExtensionForPHP() {
+        var currentlyOpenTabfilePath = vscode.window.activeTextEditor.document.fileName;
+        var currentlyOpenTabfileName = path.basename(currentlyOpenTabfilePath);
+        return currentlyOpenTabfileName.slice(0 , -4);
     }
 }
 
