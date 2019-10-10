@@ -224,8 +224,7 @@ class PropertyInserter {
     }
 
     getInsertLine(declarations) {
-        let lineNumber = declarations.lastPropertyLineNumber || declarations.traitUseLineNumber || declarations.classLineNumber || 0;
-        console.log(lineNumber);
+        let lineNumber = declarations.lastPropertyLineNumber || declarations.traitUseLineNumber || declarations.classLineNumber;
 
         return ++lineNumber;
     }
