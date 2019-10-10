@@ -334,9 +334,7 @@ class PropertyInserter {
         return config;
     }
 
-    insertClass(declarations) {
-        
-
+    insertClass() {     
         let snippet = '<?php\n\n';
 
         snippet += 'namespace ${1:namespace};\n\n'
